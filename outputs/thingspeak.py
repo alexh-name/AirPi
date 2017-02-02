@@ -1,18 +1,18 @@
 import output
 import requests
 
-class Thingspeak(output.Output):
+class ThingSpeak(output.Output):
+    """A module to output data to ThingSpeak.
 
-    #TODO: Class docs
+    """
 
     requiredSpecificParams = ["apikey"]
 
     def __init__(self, config):
-        super(Thingspeak, self).__init__(config)
+        super(ThingSpeak, self).__init__(config)
         self.apikey = self.params["apikey"]
 
     def output_data(self, datapoints, dummy):
-        #TODO: Include GPS location data in this output
         """Output data.
 
         Output data in the format stipulated by the plugin. Calibration
