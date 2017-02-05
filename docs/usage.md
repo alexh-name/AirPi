@@ -564,7 +564,7 @@ include any spaces in this (use underscores if required).
   Raspberry Pi, `1` for subsequent revisions).
 + `mslp` specifies whether Mean Sea Level Pressure should be returned instead
   of absolute local pressure (requires `altitude` to be set too).
-+ `altitude` specifies the current altitude, for use with `mslp` in relation to
++ `altitude` specifies the current altitude in meters, for use with `mslp` in relation to
   atmospheric pressure readings.
 
 
