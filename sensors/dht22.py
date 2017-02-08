@@ -64,7 +64,7 @@ class DHT22(sensor.Sensor):
             self.sensorname = "DHT22-hum"
             self.valname = "Relative_Humidity"
             self.valsymbol = "%"
-            self.valunit = "% Relative Humidity"
+            self.valunit = "Pct Relative Humidity"
         if "description" in data:
             self.description = data["description"]
         else:

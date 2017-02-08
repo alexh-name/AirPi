@@ -81,9 +81,10 @@ class Limits(support.Support):
         samplename = samplename.lower()
         if samplename in self.limits:
             if samplevalue > float(self.limits[samplename]["value"]):
-                if sampleunit == self.limits[samplename]["units"]:
+                sensorunit = self.limits[samplename]["units"]
+                if sampleunit == sensorunit:
                     return True
                 else:
-                    print("ERROR: Limit units do not match measurement units for " + samplename)
-                    print("       " + sampleunit + " is not the same as " + self.limits[samplename]["unit"])
+                    print('ERROR: Limit units do not match measurement units for ' + samplename)
+                    print('       ' + sampleunit + ' is not the same as ' + sensorunit)
         return False
