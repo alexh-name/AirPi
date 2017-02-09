@@ -899,6 +899,7 @@ def set_settings():
     settingslist['GREENPIN'] = mainconfig.getint("LEDs", "greenPin")
     settingslist['SUCCESSLED'] = mainconfig.get("LEDs", "successLED")
     settingslist['FAILLED'] = mainconfig.get("LEDs", "failLED")
+    settingslist['LIMITLED'] = mainconfig.get("LEDs", "limitLED")
     # Misc
     settingslist['OPERATOR'] = mainconfig.get("Misc", "operator")
     settingslist['HELP'] = mainconfig.getboolean("Misc", "help")
@@ -1113,6 +1114,7 @@ def sample():
                 # Read the sensors
                 failedsensors = []
                 sampletime = datetime.datetime.now()
+                breaches = []
                 for sensor in PLUGINSSENSORS:
                     datadict = {}
                     if sensor == gpsplugininstance:
@@ -1140,6 +1142,10 @@ def sample():
                         dataset[identifier]['values'].append(datadict["value"])
                     # Always record raw values for every sensor
                     data.append(datadict)
+                    #print datadict["breach"]
+                    #print "Trap -1"
+                    if datadict["breach"] is True:
+                        breaches.append(sensor.sensorname)
                 # Record the outcome of reading sensors
                 if 'AVERAGEFREQ' in SETTINGS:
                     countcurrent += 1
@@ -1188,6 +1194,11 @@ def sample():
                                         not greenhaslit))):
                                 led_on(SETTINGS['GREENPIN'])
                                 greenhaslit = True
+                            if (breaches != [] and SETTINGS['LIMITLED'] == "yes"):
+                                led_on(SETTINGS['REDPIN'])
+                                redhaslit = True
+                            else:
+                                led_off(SETTINGS['REDPIN'])
                         else:
                             if not alreadysentoutputnotifications:
                                 for j in PLUGINSNOTIFICATIONS:
@@ -1217,7 +1228,8 @@ def sample():
                     if SETTINGS['GREENPIN']:
                         led_off(SETTINGS['GREENPIN'])
                     if (SETTINGS['REDPIN'] and
-                            SETTINGS['FAILLED'] != "constant"):
+                            SETTINGS['FAILLED'] != "constant" and
+                                (breaches == [] or SETTINGS['LIMITLED'] != "yes")):
                         led_off(SETTINGS['REDPIN'])
                 samples += 1
                 if samples == SETTINGS['STOPAFTER']:
