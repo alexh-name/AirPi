@@ -57,11 +57,12 @@ class Limits(support.Support):
         if config.has_section("Limits") and config.has_option("Limits", "enabled") and config.getboolean("Limits", "enabled"):
             for phenomena, limit in config.items("Limits"):
                 if phenomena.startswith("limit_"):
-                    [value, units] = limit.split(',', 1)
+                    [value, units, direction] = limit.split(',', 2)
                     name = phenomena[6:].lower()
                     self.limits[name] = {}
                     self.limits[name]["value"] = value
                     self.limits[name]["units"] = units
+                    self.limits[name]["direction"] = direction
 
     def isbreach(self, samplename, samplevalue, sampleunit):
         """Check whether a data point breaches a limit.
@@ -80,11 +81,18 @@ class Limits(support.Support):
         """
         samplename = samplename.lower()
         if samplename in self.limits:
-            if samplevalue > float(self.limits[samplename]["value"]):
+            breach = "no"
+            if self.limits[samplename]["direction"] == "down":
+                if samplevalue < float(self.limits[samplename]["value"]):
+                    breach = "yes"
+            else:
+                if samplevalue > float(self.limits[samplename]["value"]):
+                    breach = "yes"
+            if breach == "yes":
                 sensorunit = self.limits[samplename]["units"]
                 if sampleunit == sensorunit:
                     return True
                 else:
                     print('ERROR: Limit units do not match measurement units for ' + samplename)
                     print('       ' + sampleunit + ' is not the same as ' + sensorunit)
-        return False
+                    return False
